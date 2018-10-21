@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 
-def get_edges(image):
-    edges = cv2.Canny(image, 65, 165)
+def get_edges(image, low=65, high=165):
+    edges = cv2.Canny(image, low, high)
     return cv2.bitwise_not(edges)
 
 def spike_removal_filter(array, threshold, window_size):
