@@ -36,7 +36,7 @@ def copykey(input, output, keytype):
     result = video_to_frame.find_best(1, key_images)[0]
 
     edges = frame_to_boundary.get_edges(result)
-    boundary = frame_to_boundary.get_boundary_raytracing(edges, 0.1 * edges.shape[1] / WIDTH_MM, 0.1 * edges.shape[1] / WIDTH_MM)
+    boundary = frame_to_boundary.get_boundary_raytracing(edges, int(0.1 * edges.shape[1] / WIDTH_MM), int(0.1 * edges.shape[1] / WIDTH_MM))
 
     boundary_transformed = np.apply_along_axis(get_mm_conversion(result.shape[1], result.shape[0]), axis=1, arr=boundary)
     scadstring = boundary_to_stl.boundary_to_scad(boundary_transformed, keytype)
