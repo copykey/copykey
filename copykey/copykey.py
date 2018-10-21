@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from copykey import video_to_frame, frame_to_boundary, boundary_to_stl
+import os
 
 # width of image in mm
 WIDTH_MM = 94.8266666667
@@ -24,8 +25,8 @@ def convert_back(point, width, height):
     return np.array([int(x), int(y)])
 
 
-def copykey(vid, keytype):
-    frames = video_to_frame.get_frames(cv2.VideoCapture(vid))
+def copykey(input, output, keytype):
+    frames = video_to_frame.get_frames(cv2.VideoCapture(input))
 
     key_images = []
     for frame in frames:
@@ -35,8 +36,12 @@ def copykey(vid, keytype):
     result = video_to_frame.find_best(1, key_images)[0]
 
     edges = frame_to_boundary.get_edges(result)
-    boundary = frame_to_boundary.get_boundary_raytracing(edges, 10, 10)
-
+    boundary = frame_to_boundary.get_boundary_raytracing(edges, 0.1 * edges.shape[1] / WIDTH_MM, 0.1 * edges.shape[1] / WIDTH_MM)
 
     boundary_transformed = np.apply_along_axis(get_mm_conversion(result.shape[1], result.shape[0]), axis=1, arr=boundary)
-    scadstring = boundary_to_stl.boundary_to_stl(boundary_transformed, keytype)
+    scadstring = boundary_to_stl.boundary_to_scad(boundary_transformed, keytype)
+
+    f = open(output, "w+")
+    f.write(scadstring)
+
+    os.remove(input)
