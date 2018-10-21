@@ -115,7 +115,7 @@ def process(img_c):
         dst = cv2.warpPerspective(img_res, M, (new_width, new_height))[crop_px:new_height - crop_px,
               crop_px:new_width - crop_px]
         return (True, dst, img_c)
-    return (False, None, img_c)
+    return (False, None, img_res)
 
 
 def find_best(num_desired, images):
