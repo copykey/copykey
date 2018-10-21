@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import visvalingamwyatt as vw
+from string import Template
 
 def align(boundary):
     """
@@ -28,7 +28,9 @@ def align(boundary):
     return boundary_rotated, np.mean(baseline_rotated[:, 1])
     # return baseline[0], baseline[-1]
 
-def boundary_to_stl(boundary):
+def boundary_to_scad(boundary, keytype):
     boundary_rotated, baseline = align(boundary)
-    return boundary_rotated
-
+    template = None
+    with open("template.scad", "r") as f:
+        template = Template(f.read())
+    return template.substitute(keyway_name=keytype, baseline=baseline, keypoints=str(boundary_rotated.tolist()))
